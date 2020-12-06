@@ -65,7 +65,11 @@
           </button>
           <div>
             <div class="text-center">
-              <img src="{{this.ProfilePicture}}" class="img-thumbnail img-fluid " alt="...">
+              {{#if this.ProfilePicture }}
+                <img src="{{this.ProfilePicture}}" class="img-thumbnail img-fluid " alt="...">
+              {{else}}
+                <img src="/public/images/male-default-profile-img.jpg" class="img-thumbnail img-fluid " alt="...">
+              {{/if}}
             </div>
             <div class="text-center">
               <h3 class="modal-title" id="exampleModalLongTitle">{{this.Name}}</h3>
@@ -89,26 +93,45 @@
                 {{!-- check if contact info is the email. If yes, use appropriate html code block --}}
                 {{!-- https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value --}}
                 {{#each this.ContactInfo}}
-                  {{#ifEquals  @key "Email"}}
+                  {{#ifEquals @key "Email"}}
                     <tr>
                       <th scope="row">{{@key}}:</th>
                       <td>
-                          <a href = "mailto: {{this}}">{{this}}</a>
+                        <a href = "mailto: {{this}}">{{this}}</a>
                       </td>
                     </tr>
-                  {{else}}
-                    <tr class="collapse collapseme{{../Id}}">
-                      <th scope="row">{{@key}}:</th>
-                      <td>
+
+                {{else}}
+                    {{#ifEquals @key "Github"}}
+                      <tr id="link-display" class="collapse collapseme{{../Id}}">
+                        <th scope="row">{{@key}}:
+
+                          <td>
+                            <a href="https://www.{{this}}" target="_blank">{{this}}</a>
+                            <ul id="links">
+                              {{#each ../this.Repos}}
+                                <li><a href="{{this}}">{{this}}</a></li>
+                        </th>
+                              {{/each}}
+                            </ul>
+                          </td>
+
+                      </tr>
+
+                {{else}}
+                      <tr class="collapse collapseme{{../Id}}">
+                        <th scope="row">{{@key}}: </th>
+
+                        <td>
                           <a href="https://www.{{this}}" target="_blank">{{this}}</a>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+                    {{/ifEquals}}
                   {{/ifEquals}}
                 {{/each}}
-
                 <tr>
                   <td>
-                    <button id="" class="btn btn-link showMoreLessBtn" data-toggle="collapse" data-target=".collapseme{{Id}}" data-text-alt="-Show Less">
+                    <button id="" type="button" class="btn btn-link showMoreLessBtn" data-toggle="collapse" data-target=".collapseme{{Id}}" data-text-alt="-Show Less">
                       +Show More
                     </button>
                   </td>
@@ -118,6 +141,7 @@
           </table>
           <!-- hidden field used to redo search after updating the experts -->
           <input name="keyword" type="hidden" value="{{../keyword}}"/>
+          <input name="Id" type="hidden" value="{{this.Id}}"/>
         </div>
         <div class="modal-footer">
           <div class="container">
